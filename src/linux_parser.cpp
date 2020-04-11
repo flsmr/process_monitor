@@ -75,18 +75,11 @@ float LinuxParser::MemoryUtilization() {
   std::ifstream filestream(kProcDirectory + kMeminfoFilename);
   if (filestream.is_open()) {
     while (std::getline(filestream, line)) {
-      //std::replace(line.begin(), line.end(), ' ', '_');
-      //std::replace(line.begin(), line.end(), '=', ' ');
-      //std::replace(line.begin(), line.end(), '"', ' ');
-//      std::cout << "line: " << line <<std::endl;
       std::istringstream linestream(line);
       while (linestream >> key >> value) {
-//      std::cout << "key: " << key << " value: " << value << std::endl;
         if (key == "MemTotal:") {
-          //std::replace(value.begin(), value.end(), '_', ' ');
           memTotal = static_cast<float>(stoi(value));
         } else if (key == "MemFree:") {
-          //std::replace(value.begin(), value.end(), '_', ' ');
           memFree = static_cast<float>(stoi(value));
         }
       }
@@ -115,7 +108,23 @@ long LinuxParser::IdleJiffies() { return 0; }
 vector<string> LinuxParser::CpuUtilization() { return {}; }
 
 // TODO: Read and return the total number of processes
-int LinuxParser::TotalProcesses() { return 0; }
+int LinuxParser::TotalProcesses() { 
+  string line;
+  string key;
+  string value;
+  std::ifstream filestream(kProcDirectory + kStatFilename);
+  if (filestream.is_open()) {
+    while (std::getline(filestream, line)) {
+      std::istringstream linestream(line);
+      while (linestream >> key >> value) {
+        if (key == "processes") {
+          return static_cast<int>(stoi(value));
+        }
+      }
+    }
+  }
+  return 0;
+}
 
 // TODO: Read and return the number of running processes
 int LinuxParser::RunningProcesses() { return 0; }
