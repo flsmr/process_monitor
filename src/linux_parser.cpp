@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <string>
 #include <vector>
-
+#include <iostream>
 #include "linux_parser.h"
 
 using std::stof;
@@ -67,7 +67,33 @@ vector<int> LinuxParser::Pids() {
 }
 
 // TODO: Read and return the system memory utilization
-float LinuxParser::MemoryUtilization() { return 0.0; }
+float LinuxParser::MemoryUtilization() {
+  string line;
+  string key;
+  string value;
+  float memTotal(1.0f), memFree(0.0f);
+  std::ifstream filestream(kProcDirectory + kMeminfoFilename);
+  if (filestream.is_open()) {
+    while (std::getline(filestream, line)) {
+      //std::replace(line.begin(), line.end(), ' ', '_');
+      //std::replace(line.begin(), line.end(), '=', ' ');
+      //std::replace(line.begin(), line.end(), '"', ' ');
+//      std::cout << "line: " << line <<std::endl;
+      std::istringstream linestream(line);
+      while (linestream >> key >> value) {
+//      std::cout << "key: " << key << " value: " << value << std::endl;
+        if (key == "MemTotal:") {
+          //std::replace(value.begin(), value.end(), '_', ' ');
+          memTotal = static_cast<float>(stoi(value));
+        } else if (key == "MemFree:") {
+          //std::replace(value.begin(), value.end(), '_', ' ');
+          memFree = static_cast<float>(stoi(value));
+        }
+      }
+    }
+  }
+  return (1.0f - memFree/memTotal);
+}
 
 // TODO: Read and return the system uptime
 long LinuxParser::UpTime() { return 0; }
