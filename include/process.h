@@ -22,6 +22,9 @@ class Process {
  int pid_{0};
  std::string user_{};
  std::string command_{};
+ float totalProcessCPUTime_{0.0f};
+ float processUpTime_{0.0f};
+ float cpuUtilization_{0.0f};
 };
 
 #endif

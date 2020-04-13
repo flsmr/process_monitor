@@ -15,7 +15,10 @@ string Format::ElapsedTime(long seconds) {
 
     string hourstxt, minutestxt, secondstxt;
     secondstxt = std::to_string(seconds%60).c_str();
+    secondstxt = secondstxt.length() == 1 ? "0" + secondstxt : secondstxt;
     minutestxt = std::to_string(minutes%60).c_str();
+    minutestxt = minutestxt.length() == 1 ? "0" + minutestxt : minutestxt;
     hourstxt   = std::to_string(hours%60).c_str();
+    hourstxt = hourstxt.length() == 1 ? "0" + hourstxt : hourstxt;
     return hourstxt + ":" + minutestxt + ":" + secondstxt;
 }
